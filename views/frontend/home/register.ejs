@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Zavy</title>
+    <% include ../../layouts/stylesheet %>
+    <% include ../../layouts/script %>
+    <style>
+        .otp-fields {
+            display: none;
+        }
+    </style>
+</head>
+<body class="body1">
+    <br>
+    <div class="container1">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 form">
+                <form action="/register" id="registerForm" method="POST" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="title">
+                            <legend><b>Zavy</b></legend>
+                        </div>
+                    </div>
+            
+                    <div class="form-group" id="crtk">
+                        <b>Tạo một tài khoản mới</b>
+                    </div>
+    
+                    <% if(errorMessage) {%>
+                        <div class="alert alert-danger">
+                            <p><%= errorMessage %></p>
+                        </div>
+                    <%}%>
+    
+                    <div class="form-group">
+                        <label for="email">Địa Chỉ mail</label>
+                        <input type="text" name="email" class="form-control" id="email" placeholder="Vui lòng nhập địa chỉ mail" />
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-secondary" type="button" id="btnNhanOtp" onclick="sendOTP()">Nhận OTP</button>                       
+                        <span id="otpSuccessLabel" style="display: none;">Xác nhận mail thành công</span> 
+                    </div>
+    
+                    <div class="form-group otp-fields" id="otpField">
+                        <label for="otp">Nhập OTP</label>
+                        <input type="text" name="otp" class="form-control" id="otp" placeholder="Nhập mã OTP đã gửi đến email của bạn" />
+                        <button class="btn btn-secondary" type="button" onclick="confirmOTP()">Xác Nhận</button>
+                    </div>
+
+                    <!-- Phần nhập thông tin tài khoản -->
+                    <div class="form-group" id="accountInfo" style="display: none;">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="firstname">Họ</label>
+                                <input type="text" name="firstname" class="form-control" id="firstname" placeholder="nhập họ và tên đệm" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="lastname">Tên</label>
+                                <input type="text" name="lastname" class="form-control" id="lastname" placeholder="Nhập tên của bạn" />
+                            </div>
+                        </div>
+                        <label for="password">Mật khẩu</label>
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Vui lòng nhập mật khẩu" />
+                        <label for="confirmpassword">Nhập lại mật khẩu</label>
+                        <input type="password" name="confirmpassword" class="form-control" id="confirmpassword" placeholder="Nhập lại mật khẩu" />
+                    </div>
+    
+                    <div class="form-group" id="registerButton" style="display: none;">
+                        <div class="checkbox">
+                            <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                            <button type="submit" onclick = "return validateForm(event)" class="btn btn-primary pull-right">Đăng Ký</button>
+                        </div>
+                    </div>
+                </form><br>
+                <a href="/login">Đã có tài khoản quay lại đăng nhập</a>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+</body>
+
+<script>
+    function sendOTP() {
+        document.querySelector('#otpField').style.display = 'block';
+        document.querySelector('#otpSuccessLabel').style.display = 'none';
+    }
+
+    function confirmOTP() {
+        // Xử lý xác nhận OTP ở đây
+
+        // Ẩn phần nhập OTP
+        document.querySelector('#otpField').style.display = 'none';
+        // Hiển thị phần nhập thông tin tài khoản
+        document.querySelector('#accountInfo').style.display = 'block';
+        // Hiển thị nút Đăng ký
+        document.querySelector('#registerButton').style.display = 'block';
+        // Hiển thị nhãn xác thực OTP thành công
+        document.querySelector('#otpSuccessLabel').style.display = 'inline';
+        alert('xác thực otp thành công')
+        // Ẩn button nhận otp
+        document.querySelector('#btnNhanOtp').style.display = 'none';
+        // Ẩn button nhận otp
+        document.querySelector('#crtk').style.display = 'none';
+    }
+
+    function validateForm(event) {
+        var firstname = document.getElementById("firstname").value;
+        var lastname = document.getElementById("lastname").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        var confirmpassword = document.getElementById("confirmpassword").value;
+
+        if(firstname == ""){
+            var mess = '<b>Vui lòng nhập họ</b>';
+            alertify.error(mess);
+            return false;
+        }
+        else if(lastname == "") {
+            var mess = '<b>Vui lòng nhập tên</b>';
+            alertify.error(mess);
+            return false;
+        }
+        else if(email == ""){
+            var mess = '<b>Vui lòng nhập mail!</b>';
+            alertify.error(mess);
+            return false;
+        }
+
+        else if(password == "") {
+            var mess = '<b>Chưa nhập mật khẩu</b>';
+            alertify.error(mess);
+            return false;
+        }
+        else if(confirmpassword == "") {
+            var mess = '<b>Vui lòng nhập lại đúng mật khẩu trên</b>';
+            alertify.error(mess);
+            return false;
+        }
+        else {
+            $('#registerForm').submit();
+            return true;
+        }
+    }
+</script>
+
+</html>
